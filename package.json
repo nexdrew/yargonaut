@@ -1,0 +1,45 @@
+{
+  "name": "yargonaut",
+  "version": "1.0.0",
+  "description": "Customize yargs text with figlet fonts",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nexdrew/yargonaut.git"
+  },
+  "standard": {
+    "ignore": [],
+    "globals": [
+      "it"
+    ]
+  },
+  "keywords": [
+    "yargs",
+    "figlet",
+    "text",
+    "font",
+    "ascii",
+    "ansi",
+    "locale",
+    "fun"
+  ],
+  "author": {
+    "name": "Andrew Goode",
+    "url": "https://github.com/nexdrew"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nexdrew/yargonaut/issues"
+  },
+  "homepage": "https://github.com/nexdrew/yargonaut#readme",
+  "devDependencies": {
+    "standard": "^5.0.0"
+  },
+  "dependencies": {
+    "figlet": "^1.1.1",
+    "parent-require": "^1.0.0"
+  }
+}
