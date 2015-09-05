@@ -140,6 +140,10 @@ function Yargonaut () {
     return figlet
   }
 
+  self.chalk = function () {
+    return chalk
+  }
+
   // private transforms
   function wholeString (str) {
     return { render: str, nonRender: '' }
