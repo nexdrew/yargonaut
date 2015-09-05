@@ -39,6 +39,7 @@
     "standard": "^5.0.0"
   },
   "dependencies": {
+    "chalk": "^1.1.1",
     "figlet": "^1.1.1",
     "parent-require": "^1.0.0"
   }
