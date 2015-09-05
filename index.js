@@ -9,7 +9,6 @@ var chalk = require('chalk')
 module.exports = new Yargonaut()
 
 function Yargonaut () {
-
   var self = this
   var yargs = hack()
   var fonts = {}
@@ -328,5 +327,4 @@ function Yargonaut () {
       return null
     }
   }
-
 }
