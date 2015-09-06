@@ -1,6 +1,6 @@
 {
   "name": "yargonaut",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Decorate yargs content with chalk styles and figlet fonts",
   "main": "index.js",
   "scripts": {
