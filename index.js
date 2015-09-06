@@ -160,7 +160,7 @@ function Yargonaut () {
     keys.forEach(function (k) {
       styles[k] = style
     })
-    if (yargs && yargs.updateLocale) applyStyleWorkaround()
+    if (yargs && yargs.updateLocale) applyStyleWorkaround(keys)
   }
 
   function applyFont (font, keys, force) {
@@ -170,11 +170,11 @@ function Yargonaut () {
       if (!yargsKeys[k]) yargsKeys[k] = { transform: wholeString, error: null }
       else if (force && yargsKeys[k].transform === null) yargsKeys[k].transform = wholeString
     })
-    if (yargs && yargs.updateLocale) applyFontWorkaround()
+    if (yargs && yargs.updateLocale) applyFontWorkaround(keys)
   }
 
-  function applyStyleWorkaround () {
-    Object.keys(styles).forEach(function (k) {
+  function applyStyleWorkaround (keys) {
+    keys.forEach(function (k) {
       if (workaround[k]) {
         if (typeof workaround[k] === 'string') workaround[k] = doStyle(k, chalk.stripColor(workaround[k]), styles[k])
         else {
@@ -197,8 +197,8 @@ function Yargonaut () {
     yargs.updateLocale(workaround)
   }
 
-  function applyFontWorkaround () {
-    Object.keys(fonts).forEach(function (k) {
+  function applyFontWorkaround (keys) {
+    keys.forEach(function (k) {
       if (workaround[k]) {
         if (typeof workaround[k] === 'string') workaround[k] = doRender(k, workaround[k], fonts[k])
         else {
