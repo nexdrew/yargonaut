@@ -1,7 +1,7 @@
 {
   "name": "yargonaut",
   "version": "1.0.0",
-  "description": "Customize yargs text with figlet fonts",
+  "description": "Decorate yargs content with chalk styles and figlet fonts",
   "main": "index.js",
   "scripts": {
     "test": "standard"
@@ -24,7 +24,11 @@
     "ascii",
     "ansi",
     "locale",
-    "fun"
+    "fun",
+    "chalk",
+    "color",
+    "terminal",
+    "cli"
   ],
   "author": {
     "name": "Andrew Goode",
@@ -36,9 +40,10 @@
   },
   "homepage": "https://github.com/nexdrew/yargonaut#readme",
   "devDependencies": {
-    "standard": "^5.0.0"
+    "standard": "^5.2.1"
   },
   "dependencies": {
+    "chalk": "^1.1.1",
     "figlet": "^1.1.1",
     "parent-require": "^1.0.0"
   }

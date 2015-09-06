@@ -1,34 +1,20 @@
 # yargonaut
 
+> Decorate yargs content with chalk styles and figlet fonts
+
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 [![npm version](https://img.shields.io/npm/v/yargonaut.svg)](https://npmjs.org/package/yargonaut)
 
-```
-▄██   ▄      ▄████████    ▄████████    ▄██████▄   ▄██████▄  ███▄▄▄▄      ▄████████ ███    █▄      ███
-███   ██▄   ███    ███   ███    ███   ███    ███ ███    ███ ███▀▀▀██▄   ███    ███ ███    ███ ▀█████████▄
-███▄▄▄███   ███    ███   ███    ███   ███    █▀  ███    ███ ███   ███   ███    ███ ███    ███    ▀███▀▀██
-▀▀▀▀▀▀███   ███    ███  ▄███▄▄▄▄██▀  ▄███        ███    ███ ███   ███   ███    ███ ███    ███     ███   ▀
-▄██   ███ ▀███████████ ▀▀███▀▀▀▀▀   ▀▀███ ████▄  ███    ███ ███   ███ ▀███████████ ███    ███     ███
-███   ███   ███    ███ ▀███████████   ███    ███ ███    ███ ███   ███   ███    ███ ███    ███     ███
-███   ███   ███    ███   ███    ███   ███    ███ ███    ███ ███   ███   ███    ███ ███    ███     ███
- ▀█████▀    ███    █▀    ███    ███   ████████▀   ▀██████▀   ▀█   █▀    ███    █▀  ████████▀     ▄████▀
-                         ███    ███
+yargonaut is *the* content decorator for [yargs](https://www.npmjs.com/package/yargs),
+allowing you to customize your yargs-based CLI output using
+[chalk](https://www.npmjs.com/package/chalk) [styles](https://www.npmjs.com/package/chalk#styles)
+and/or [figlet](https://www.npmjs.com/package/figlet) fonts ... easily!
 
-```
+*Why?* Because CLI apps with color and ASCII Art are more fun!
 
-Customize your yargs-based CLI content with ASCII Art fonts ... easily!
+*Could you customize yargs text, possibly using chalk or figlet, **without** yargonaut?* Absolutely. But yargonaut makes it so easy! And yargonaut supports all locales that yargs and figlet support - out of the box.
 
-yargonaut brings the creative awesomeness of [figlet](https://www.npmjs.com/package/figlet)
-to the world of CLI goodness that is [yargs](https://www.npmjs.com/package/yargs).
-
-Why? Because ASCII Art is fun!
-
-Could you customize yargs text, possibly using figlet, **without** yargonaut?
-Absolutely. But yargonaut makes it so easy! And yargonaut supports all locales
-that yargs and figlet support - out of the box.
-
-Could ASCII Art fonts be annoying in CLI apps? Well, sure. But used tastefully,
-it can add a degree of creative flair to make your CLI stand out. Use wisely!
+*Could terminal coloring or ASCII Art fonts be annoying in CLI apps?* Well, sure. But used tastefully, it can add a degree of creative flair to make your CLI stand out. Use wisely!
 
 # Install
 
@@ -36,22 +22,22 @@ it can add a degree of creative flair to make your CLI stand out. Use wisely!
 npm install --save yargonaut yargs
 ```
 
+```js
+var yargonaut = require('yargonaut') // yargonaut first!
+var yargs = require('yargs') // then yargs
+```
+
 yargonaut assumes you have yargs installed independently.
 
-To automatically support all locales that yargs supports, make sure to
-`require('yargonaut')` in code *before* you `require('yargs')`. This should be
-natural, since you'll need to configure yargonaut before yargs parses CLI args
-anyway.
+To automatically support all locales that yargs supports, make sure to `require('yargonaut')` in code *before* you `require('yargs')`. **This is important!** If you choose to ignore this, yargonaut will attempt workarounds as best it can, but any issues caused by incorrect ordering of `require()` statements will **not** be given priority. The ordering should be natural, since you'll need to configure yargonaut before yargs parses CLI args anyway.
 
-Note that yargonaut **does not** wrap yargs and **is not** a replacement for yargs.
-It's built to work with yargs side-by-side, and it doesn't lock you in to a
-particular version of yargs, though internal string customization is only supported
-in yargs v3.16.1 and up.
+Note that yargonaut **does not** wrap yargs and **is not** a replacement for yargs. It's built to work with yargs side-by-side, and it doesn't lock you in to a particular version of yargs, though internal string customization is only supported in yargs v3.16.1 and up.
 
-If anything goes wrong, yargonaut attempts to fail gracefully and silently, so
-your CLI still works, just without the cool fonts.
+If anything goes wrong, yargonaut attempts to fail gracefully and silently, so your CLI still works, just without the cool colors/fonts.
 
 # Examples
+
+Screenshots and/or animated GIFs coming soon! Color examples don't work too well without them. :)
 
 ## Use a single figlet font for all top-level yargs strings:
 
@@ -260,6 +246,13 @@ Render error messages using the specified figlet font.
 - Returns: `yargonaut` singleton
 - `font`: string, name of figlet font
 
+### errorsStyle(style)
+
+Apply the given [chalk style](https://www.npmjs.com/package/chalk#styles) to error messages, e.g. `errorsStyle('red.bold')`.
+
+- Returns: `yargonaut` singleton
+- `style`: string, the dot-delimited chalk style (color/modifier) to use
+
 ### font(font, [key])
 
 Render yargs strings using the specified figlet font. Optionally specify which
@@ -276,6 +269,13 @@ Render help content strings using the specified figlet font.
 - Returns: `yargonaut` singleton
 - `font`: string, name of figlet font
 
+### helpStyle(style)
+
+Apply the given [chalk style](https://www.npmjs.com/package/chalk#styles) to help content, e.g. `helpStyle('green.underline')`.
+
+- Returns: `yargonaut` singleton
+- `style`: string, the dot-delimited chalk style (color/modifier) to use
+
 ### ocd(fn)
 
 For obsessive control over string transformations, provide a function that
@@ -288,6 +288,14 @@ yargonaut will call for every yargs string (every y18n lookup).
   - `newString`: string, the new string as rendered by yargonaut/figlet
   - `figlet`: figlet, the figlet instance
   - `font`: string, the configured figlet font for the key
+
+### style(style, [key])
+
+Apply the given [chalk style](https://www.npmjs.com/package/chalk#styles) to all yargs strings, e.g. `style('blue')`. Optionally specify which yargs string(s) the style should apply to.
+
+- Returns: `yargonaut` singleton
+- `style`: string, the dot-delimited chalk style (color/modifier) to use
+- `key`: string or array of strings, optional key(s) the style should apply to
 
 ### transformUpToFirstColon(key)
 
@@ -324,7 +332,7 @@ Get a list of known help content strings subject to y18n lookup and yargonaut re
 
 - Returns: array of strings, representing configured help content yargs strings
 
-## Convenience methods for playing with fonts
+## Convenience methods for playing with stuff
 
 ### asFont(text, font, [throwErr])
 
@@ -334,6 +342,12 @@ Render any text as the given figlet font and return as string.
 - `text`: string, the text to render
 - `font`: string, the figlet font to use for rendering
 - `throwErr`: boolean, optional flag to throw any error that might occur, defaults to `false`
+
+### chalk()
+
+Get access to the `chalk` instance used by yargonaut. In case you want to color your own strings without having to `require('chalk')` yourself.
+
+- Returns: `chalk`, the chalk instance
 
 ### figlet()
 

@@ -4,18 +4,21 @@ var path = require('path')
 
 var parentRequire = require('parent-require')
 var figlet = require('figlet')
+var chalk = require('chalk')
 
 module.exports = new Yargonaut()
 
 function Yargonaut () {
-
   var self = this
-  var yargs = hack(self)
+  var yargs = hack()
   var fonts = {}
+  var styles = {}
+  var workaround = {}
   var ocdf = null
   var defaultFont = 'Standard'
 
   var yargsKeys = {
+    // supporting fonts and styles
     'Commands:': { transform: wholeString, error: false },
     'Options:': { transform: wholeString, error: false },
     'Examples:': { transform: wholeString, error: false },
@@ -28,7 +31,17 @@ function Yargonaut () {
     'Argument check failed: %s': { transform: upToFirstColon, error: true },
     'Implications failed:': { transform: wholeString, error: true },
     'Not enough arguments following: %s': { transform: upToFirstColon, error: true },
-    'Invalid JSON config file: %s': { transform: upToFirstColon, error: true }
+    'Invalid JSON config file: %s': { transform: upToFirstColon, error: true },
+    // supporting styles only (by default)
+    'boolean': { transform: null, error: null },
+    'count': { transform: null, error: null },
+    'string': { transform: null, error: null },
+    'array': { transform: null, error: null },
+    'required': { transform: null, error: null },
+    'default:': { transform: null, error: null },
+    'choices:': { transform: null, error: null },
+    'generated-value': { transform: null, error: null },
+    'Argument: %s, Given: %s, Choices: %s': { transform: null, error: true }
   }
 
   // chainable config API methods
@@ -44,7 +57,23 @@ function Yargonaut () {
 
   self.font = function (font, key) {
     var keys = key ? [].concat(key) : self.getAllKeys()
-    applyFont(font, keys)
+    applyFont(font, keys, key !== undefined)
+    return self
+  }
+
+  self.helpStyle = function (style) {
+    applyStyle(style, self.getHelpKeys())
+    return self
+  }
+
+  self.errorsStyle = function (style) {
+    applyStyle(style, self.getErrorKeys())
+    return self
+  }
+
+  self.style = function (style, key) {
+    var keys = key ? [].concat(key) : self.getAllKeys()
+    applyStyle(style, keys)
     return self
   }
 
@@ -111,6 +140,10 @@ function Yargonaut () {
     return figlet
   }
 
+  self.chalk = function () {
+    return chalk
+  }
+
   // private transforms
   function wholeString (str) {
     return { render: str, nonRender: '' }
@@ -122,30 +155,70 @@ function Yargonaut () {
   }
 
   // private config methods
-  function applyFont (font, keys) {
+  function applyStyle (style, keys) {
+    if (typeof style !== 'string') return
+    keys.forEach(function (k) {
+      styles[k] = style
+    })
+    if (yargs && yargs.updateLocale) applyStyleWorkaround(keys)
+  }
+
+  function applyFont (font, keys, force) {
     if (typeof font !== 'string') font = defaultFont
     keys.forEach(function (k) {
       fonts[k] = font
       if (!yargsKeys[k]) yargsKeys[k] = { transform: wholeString, error: null }
+      else if (force && yargsKeys[k].transform === null) yargsKeys[k].transform = wholeString
     })
-    if (yargs && yargs.updateLocale) applyFontWorkaround(font, keys)
+    if (yargs && yargs.updateLocale) applyFontWorkaround(keys)
   }
 
-  function applyFontWorkaround (font, keys) {
-    var u = {}
-    var rendered
-    Object.keys(fonts).forEach(function (k) {
-      rendered = doRender(k, k, fonts[k])
-      if (yargsKeys[k].plural) {
-        u[k] = {
-          one: rendered,
-          other: doRender(yargsKeys[k].plural, yargsKeys[k].plural, fonts[k])
+  function applyStyleWorkaround (keys) {
+    keys.forEach(function (k) {
+      if (workaround[k]) {
+        if (typeof workaround[k] === 'string') workaround[k] = doStyle(k, chalk.stripColor(workaround[k]), styles[k])
+        else {
+          workaround[k] = {
+            one: doStyle(k, chalk.stripColor(workaround[k].one), styles[k]),
+            other: doStyle(yargsKeys[k].plural, chalk.stripColor(workaround[k].other), styles[k])
+          }
         }
       } else {
-        u[k] = rendered
+        if (yargsKeys[k] && yargsKeys[k].plural) {
+          workaround[k] = {
+            one: doStyle(k, k, styles[k]),
+            other: doStyle(yargsKeys[k].plural, yargsKeys[k].plural, styles[k])
+          }
+        } else {
+          workaround[k] = doStyle(k, k, styles[k])
+        }
       }
     })
-    yargs.updateLocale(u)
+    yargs.updateLocale(workaround)
+  }
+
+  function applyFontWorkaround (keys) {
+    keys.forEach(function (k) {
+      if (workaround[k]) {
+        if (typeof workaround[k] === 'string') workaround[k] = doRender(k, workaround[k], fonts[k])
+        else {
+          workaround[k] = {
+            one: doRender(k, workaround[k].one, fonts[k]),
+            other: doRender(yargsKeys[k].plural, workaround[k].other, fonts[k])
+          }
+        }
+      } else {
+        if (yargsKeys[k] && yargsKeys[k].plural) {
+          workaround[k] = {
+            one: doRender(k, k, fonts[k]),
+            other: doRender(yargsKeys[k].plural, yargsKeys[k].plural, fonts[k])
+          }
+        } else {
+          workaround[k] = doRender(k, k, fonts[k])
+        }
+      }
+    })
+    yargs.updateLocale(workaround)
   }
 
   function applyTransform (transform, keys) {
@@ -156,8 +229,17 @@ function Yargonaut () {
   }
 
   // private logic to intercept y18n methods
+  function doStyle (key, orig, style) {
+    var chain = chalk
+    style.split('.').forEach(function (s) {
+      if (chain[s]) chain = chain[s]
+    })
+    return typeof chain === 'function' ? chain(orig) : orig
+  }
+
   function doRender (key, orig, font) {
     var fn = yargsKeys[key] ? yargsKeys[key].transform : upToFirstColon
+    if (fn === null) return orig
     var split = fn(orig)
     return self.asFont(split.render, font) + split.nonRender
   }
@@ -215,6 +297,7 @@ function Yargonaut () {
       }
 
       function tweak (key, origString, newString, figlet, font) {
+        if (styles[key]) newString = doStyle(key, newString, styles[key])
         return ocdf ? ocdf(key, origString, newString, figlet, font) : newString
       }
 
@@ -248,5 +331,4 @@ function Yargonaut () {
       return null
     }
   }
-
 }
