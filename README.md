@@ -12,7 +12,7 @@ and/or [figlet](https://www.npmjs.com/package/figlet) fonts ... easily!
 
 *Why?* Because CLI apps with color and ASCII Art are more fun!
 
-*Could you customize yargs text, possibly using chalk or figlet, **without** yargonaut?* Absolutely. But yargonaut makes it so easy! And yargonaut supports all locales that yargs and figlet support - out of the box.
+*Could you customize yargs text, possibly using chalk or figlet, without yargonaut?* Absolutely. But yargonaut makes it so easy! And yargonaut supports all locales that yargs and figlet support - out of the box.
 
 *Could terminal coloring or ASCII Art fonts be annoying in CLI apps?* Well, sure. But used tastefully, it can add a degree of creative flair to make your CLI stand out. Use wisely!
 
