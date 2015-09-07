@@ -13,7 +13,8 @@ function Yargonaut () {
   var yargs = hack()
   var fonts = {}
   var styles = {}
-  var workaround = {}
+  var fontWorkaround = {}
+  var styleWorkaround = {}
   var ocdf = null
   var defaultFont = 'Standard'
 
@@ -174,51 +175,59 @@ function Yargonaut () {
   }
 
   function applyStyleWorkaround (keys) {
+    var u = {}
     keys.forEach(function (k) {
-      if (workaround[k]) {
-        if (typeof workaround[k] === 'string') workaround[k] = doStyle(k, chalk.stripColor(workaround[k]), styles[k])
-        else {
-          workaround[k] = {
-            one: doStyle(k, chalk.stripColor(workaround[k].one), styles[k]),
-            other: doStyle(yargsKeys[k].plural, chalk.stripColor(workaround[k].other), styles[k])
-          }
+      // cache non-font styled text in styleWorkaround
+      if (yargsKeys[k] && yargsKeys[k].plural) {
+        styleWorkaround[k] = {
+          one: doStyle(k, k, styles[k]),
+          other: doStyle(yargsKeys[k].plural, yargsKeys[k].plural, styles[k])
         }
       } else {
-        if (yargsKeys[k] && yargsKeys[k].plural) {
-          workaround[k] = {
-            one: doStyle(k, k, styles[k]),
-            other: doStyle(yargsKeys[k].plural, yargsKeys[k].plural, styles[k])
+        styleWorkaround[k] = doStyle(k, k, styles[k])
+      }
+      u[k] = styleWorkaround[k]
+
+      // style font-rendered text if defined
+      if (fontWorkaround[k]) {
+        if (typeof fontWorkaround[k] === 'string') u[k] = doStyle(k, fontWorkaround[k], styles[k])
+        else {
+          u[k] = {
+            one: doStyle(k, fontWorkaround[k].one, styles[k]),
+            other: doStyle(yargsKeys[k].plural, fontWorkaround[k].other, styles[k])
           }
-        } else {
-          workaround[k] = doStyle(k, k, styles[k])
         }
       }
     })
-    yargs.updateLocale(workaround)
+    yargs.updateLocale(u)
   }
 
   function applyFontWorkaround (keys) {
+    var u = {}
     keys.forEach(function (k) {
-      if (workaround[k]) {
-        if (typeof workaround[k] === 'string') workaround[k] = doRender(k, workaround[k], fonts[k])
-        else {
-          workaround[k] = {
-            one: doRender(k, workaround[k].one, fonts[k]),
-            other: doRender(yargsKeys[k].plural, workaround[k].other, fonts[k])
-          }
+      // cache non-styled font text in fontWorkaround
+      if (yargsKeys[k] && yargsKeys[k].plural) {
+        fontWorkaround[k] = {
+          one: doRender(k, k, fonts[k]),
+          other: doRender(yargsKeys[k].plural, yargsKeys[k].plural, fonts[k])
         }
       } else {
-        if (yargsKeys[k] && yargsKeys[k].plural) {
-          workaround[k] = {
-            one: doRender(k, k, fonts[k]),
-            other: doRender(yargsKeys[k].plural, yargsKeys[k].plural, fonts[k])
+        fontWorkaround[k] = doRender(k, k, fonts[k])
+      }
+      u[k] = fontWorkaround[k]
+
+      // render styled text if defined
+      if (styleWorkaround[k]) {
+        if (typeof styleWorkaround[k] === 'string') u[k] = doRender(k, styleWorkaround[k], fonts[k])
+        else {
+          u[k] = {
+            one: doRender(k, styleWorkaround[k].one, fonts[k]),
+            other: doRender(yargsKeys[k].plural, styleWorkaround[k].other, fonts[k])
           }
-        } else {
-          workaround[k] = doRender(k, k, fonts[k])
         }
       }
     })
-    yargs.updateLocale(workaround)
+    yargs.updateLocale(u)
   }
 
   function applyTransform (transform, keys) {
