@@ -4,11 +4,14 @@
 
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
 [![npm version](https://img.shields.io/npm/v/yargonaut.svg)](https://npmjs.org/package/yargonaut)
+![yargs + chalk + figlet = yes please](https://img.shields.io/badge/yargs%20%2B%20chalk%20%2B%20figlet-yes%2C%20please!-ff69b4.svg)
 
 yargonaut is *the* content decorator for [yargs](https://www.npmjs.com/package/yargs),
 allowing you to customize your yargs-based CLI output using
 [chalk](https://www.npmjs.com/package/chalk) [styles](https://www.npmjs.com/package/chalk#styles)
 and/or [figlet](https://www.npmjs.com/package/figlet) fonts ... easily!
+
+![yargonaut-demo](https://cloud.githubusercontent.com/assets/1929625/9726791/ae6830ac-55c5-11e5-9af4-968844a9f5fa.gif)
 
 *Why?* Because CLI apps with color and ASCII Art are more fun!
 
@@ -37,12 +40,12 @@ If anything goes wrong, yargonaut attempts to fail gracefully and silently, so y
 
 # Examples
 
-Screenshots and/or animated GIFs coming soon! Color examples don't work too well without them. :)
-
-## Use a single figlet font for all top-level yargs strings:
+## Use a single style and font for all top-level yargs strings:
 
 ```js
-require('yargonaut').font('Small Slant') // that's it!
+require('yargonaut')
+  .style('blue')
+  .font('Small Slant') // that's it!
 
 var argv = require('yargs')
   .command('add', 'Add item to cart')
@@ -101,12 +104,14 @@ $ node order.js
    p
 ```
 
-## Use one figlet font for help content and another for error messages:
+## Use one style and font for help content and another for error messages:
 
 ```js
 require('yargonaut')
   .help('3D-ASCII')
+  .helpStyle('green')
   .errors('Calvin S')
+  .errorsStyle('red')
 
 var argv = require('yargs')
   .command('add', 'Add item to cart')
@@ -183,6 +188,7 @@ $ node order.js
 ```js
 require('yargonaut')
   .font('DOS Rebel', 'Invalid values:')
+  .style('yellow', 'Invalid values:')
 
 var argv = require('yargs')
   .option('s', {
