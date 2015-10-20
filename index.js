@@ -254,7 +254,10 @@ function Yargonaut () {
   }
 
   function hack () {
-    var lookingFor = path.join('yargs', 'node_modules', 'y18n', 'index.js')
+    var lookingFor = []
+    lookingFor.push(path.join('yargs', 'node_modules', 'y18n', 'index.js')) // npm 2 = nested
+    lookingFor.push(path.join('y18n', 'index.js')) // npm 3 = flat
+
     var found = findInModuleCache(lookingFor)
 
     if (found) {
@@ -262,11 +265,11 @@ function Yargonaut () {
       return parentRequireSafe('yargs')
     }
 
-    var Y18n = parentRequireSafe(lookingFor)
+    var Y18n = parentRequireFirstOf(lookingFor)
     found = findInModuleCache(lookingFor)
 
     if (!found) {
-      // console.log('yargonaut: You're using a version of yargs that does not support string customization')
+      // console.log('yargonaut: You\'re using a version of yargs that does not support string customization')
       return parentRequireSafe('yargs')
     }
 
@@ -325,12 +328,24 @@ function Yargonaut () {
   function findInModuleCache (lookingFor) {
     var found = null
     for (var i = 0, files = Object.keys(require.cache); i < files.length; i++) {
-      if (~files[i].lastIndexOf(lookingFor)) {
-        found = files[i]
-        break
+      for (var j = 0; j < lookingFor.length; j++) {
+        if (~files[i].lastIndexOf(lookingFor[j])) {
+          found = files[i]
+          break
+        }
       }
+      if (found) break
     }
     return found
+  }
+
+  function parentRequireFirstOf (array) {
+    var success = null
+    for (var x = 0; x < array.length; x++) {
+      success = parentRequireSafe(array[x])
+      if (success) break
+    }
+    return success
   }
 
   function parentRequireSafe (m) {
