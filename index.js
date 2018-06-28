@@ -22,6 +22,7 @@ function Yargonaut () {
     // supporting fonts and styles
     'Commands:': { transform: wholeString, error: false },
     'Options:': { transform: wholeString, error: false },
+    'Command Options:': { transform: wholeString, error: false },
     'Examples:': { transform: wholeString, error: false },
     'Not enough non-option arguments: got %s, need at least %s': { transform: upToFirstColon, error: true },
     'Too many non-option arguments: got %s, maximum of %s': { transform: upToFirstColon, error: true },
