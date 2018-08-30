@@ -22,8 +22,8 @@ function Yargonaut () {
     // supporting fonts and styles
     'Commands:': { transform: wholeString, error: false },
     'Options:': { transform: wholeString, error: false },
-    'Command Options:': { transform: wholeString, error: false },
     'Examples:': { transform: wholeString, error: false },
+    'Positionals:': { transform: wholeString, error: false },
     'Not enough non-option arguments: got %s, need at least %s': { transform: upToFirstColon, error: true },
     'Too many non-option arguments: got %s, maximum of %s': { transform: upToFirstColon, error: true },
     'Missing argument value: %s': { transform: upToFirstColon, error: true, plural: 'Missing argument values: %s' },
@@ -34,6 +34,8 @@ function Yargonaut () {
     'Implications failed:': { transform: wholeString, error: true },
     'Not enough arguments following: %s': { transform: upToFirstColon, error: true },
     'Invalid JSON config file: %s': { transform: upToFirstColon, error: true },
+    'Did you mean %s?': { transform: wholeString, error: true },
+    'Arguments %s and %s are mutually exclusive': { transform: wholeString, error: true },
     // supporting styles only (by default)
     'boolean': { transform: null, error: null },
     'count': { transform: null, error: null },
@@ -42,6 +44,7 @@ function Yargonaut () {
     'required': { transform: null, error: null },
     'default:': { transform: null, error: null },
     'choices:': { transform: null, error: null },
+    'aliases:': { transform: null, error: null },
     'generated-value': { transform: null, error: null },
     'Argument: %s, Given: %s, Choices: %s': { transform: null, error: true }
   }
