@@ -1,6 +1,6 @@
 {
   "name": "yargonaut",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Decorate yargs content with chalk styles and figlet fonts",
   "main": "index.js",
   "scripts": {
@@ -40,11 +40,11 @@
   },
   "homepage": "https://github.com/nexdrew/yargonaut#readme",
   "devDependencies": {
-    "standard": "^5.2.1"
+    "standard": "^17.0.0"
   },
   "dependencies": {
-    "chalk": "^1.1.1",
-    "figlet": "^1.1.1",
+    "chalk": "^4.1.2",
+    "figlet": "^1.5.2",
     "parent-require": "^1.0.0"
   }
 }
